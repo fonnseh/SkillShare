@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -33,11 +33,10 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-gray-200;
   }
   body {
-    @apply bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     background-color: #0d1117;
     color: #e6edf3;
   }
@@ -152,9 +151,15 @@
 }
 
 @keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* Loading skeleton */
@@ -163,19 +168,41 @@
 }
 
 /* Match score colors */
-.match-excellent { color: #22c55e; }
-.match-good { color: #3b82f6; }
-.match-fair { color: #f59e0b; }
-.match-poor { color: #ef4444; }
+.match-excellent {
+  color: #22c55e;
+}
+.match-good {
+  color: #3b82f6;
+}
+.match-fair {
+  color: #f59e0b;
+}
+.match-poor {
+  color: #ef4444;
+}
 
 /* Status colors */
-.status-pending { @apply badge-yellow; }
-.status-review { @apply badge-blue; }
-.status-shortlisted { @apply badge-purple; }
-.status-interview { @apply badge bg-cyan-500/20 text-cyan-400 border border-cyan-500/30; }
-.status-offered { @apply badge bg-emerald-500/20 text-emerald-400 border border-emerald-500/30; }
-.status-hired { @apply badge-green; }
-.status-rejected { @apply badge-red; }
+.status-pending {
+  @apply badge-yellow;
+}
+.status-review {
+  @apply badge-blue;
+}
+.status-shortlisted {
+  @apply badge-purple;
+}
+.status-interview {
+  @apply badge bg-cyan-500/20 text-cyan-400 border border-cyan-500/30;
+}
+.status-offered {
+  @apply badge bg-emerald-500/20 text-emerald-400 border border-emerald-500/30;
+}
+.status-hired {
+  @apply badge-green;
+}
+.status-rejected {
+  @apply badge-red;
+}
 
 /* Recharts customization */
 .recharts-cartesian-grid-horizontal line,
@@ -202,7 +229,11 @@
   position: absolute;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(59, 130, 246, 0.15) 0%,
+    transparent 70%
+  );
   border-radius: 50%;
   pointer-events: none;
 }

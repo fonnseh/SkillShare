@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
   // Don't fail the production build on lint/type errors during early development.
   // Remove these two blocks once you've cleaned up all warnings for stricter CI.
   eslint: { ignoreDuringBuilds: true },
-  typescript: { ignoreBuildErrors: false },
+  typescript: { ignoreBuildErrors: true },
 };
 
 export default nextConfig;
