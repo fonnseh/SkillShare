@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { Zap, Twitter, Linkedin, Github, Mail, Phone, MapPin } from "lucide-react";
+import {
+  Zap,
+  Twitter,
+  Linkedin,
+  Github,
+  Mail,
+  Phone,
+  MapPin,
+} from "lucide-react";
 
 export function Footer() {
   return (
@@ -15,7 +23,8 @@ export function Footer() {
               <span className="text-white font-bold text-lg">SkillBridge</span>
             </Link>
             <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-xs">
-              Connecting talented individuals with top employers based on skills, not just degrees. Build your future today.
+              Connecting talented individuals with top employers based on
+              skills, not just degrees. Build your future today.
             </p>
             <div className="flex items-center gap-3">
               {[Twitter, Linkedin, Github].map((Icon, i) => (
@@ -32,16 +41,42 @@ export function Footer() {
 
           {/* Links */}
           {[
-            { title: "For Job Seekers", links: ["Browse Jobs", "Internships", "Career Advice", "Skill Assessments", "Resume Builder"] },
-            { title: "For Employers", links: ["Post a Job", "Find Talent", "Pricing", "ATS Integration", "Success Stories"] },
-            { title: "Company", links: ["About Us", "Blog", "Press", "Careers", "Contact Us"] },
+            {
+              title: "For Job Seekers",
+              links: [
+                "Browse Jobs",
+                "Internships",
+                "Career Advice",
+                "Skill Assessments",
+                "Resume Builder",
+              ],
+            },
+            {
+              title: "For Employers",
+              links: [
+                "Post a Job",
+                "Find Talent",
+                "Pricing",
+                "ATS Integration",
+                "Success Stories",
+              ],
+            },
+            {
+              title: "Company",
+              links: ["About Us", "Blog", "Press", "Careers", "Contact Us"],
+            },
           ].map((col) => (
             <div key={col.title}>
-              <h4 className="text-white font-semibold text-sm mb-4">{col.title}</h4>
+              <h4 className="text-white font-semibold text-sm mb-4">
+                {col.title}
+              </h4>
               <ul className="space-y-2.5">
                 {col.links.map((link) => (
                   <li key={link}>
-                    <a href="#" className="text-slate-400 hover:text-white text-sm transition-colors duration-200">
+                    <a
+                      href="#"
+                      className="text-slate-400 hover:text-white text-sm transition-colors duration-200"
+                    >
                       {link}
                     </a>
                   </li>
@@ -55,9 +90,15 @@ export function Footer() {
         <div className="border-t border-[#21262d] pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex flex-wrap gap-6 text-slate-400 text-sm">
-              <span className="flex items-center gap-2"><Mail className="w-4 h-4" /> hello@skillbridge.com</span>
-              <span className="flex items-center gap-2"><Phone className="w-4 h-4" /> +234 800 SKILLS</span>
-              <span className="flex items-center gap-2"><MapPin className="w-4 h-4" /> Lagos, Nigeria</span>
+              <span className="flex items-center gap-2">
+                <Mail className="w-4 h-4" /> hello@skillbridge.com
+              </span>
+              <span className="flex items-center gap-2">
+                <Phone className="w-4 h-4" /> +234 800 SKILLS
+              </span>
+              <span className="flex items-center gap-2">
+                <MapPin className="w-4 h-4" /> Buea, Cameroon
+              </span>
             </div>
             <p className="text-slate-500 text-sm">
               © {new Date().getFullYear()} SkillBridge. All rights reserved.

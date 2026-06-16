@@ -1,4 +1,11 @@
-import { PrismaClient, UserRole, JobType, JobStatus, ExperienceLevel, ApplicationStatus } from "@prisma/client";
+import {
+  PrismaClient,
+  UserRole,
+  JobType,
+  JobStatus,
+  ExperienceLevel,
+  ApplicationStatus,
+} from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -42,7 +49,7 @@ async function main() {
       profile: {
         create: {
           headline: "HR Manager at Tech Solutions Ltd",
-          location: "Lagos, Nigeria",
+          location: "Buea, Cameroon",
           profileStrength: 85,
         },
       },
@@ -54,7 +61,7 @@ async function main() {
           industry: "Technology",
           size: "201-500",
           website: "https://techsolutions.com",
-          location: "Lagos, Nigeria",
+          location: "Buea, Cameroon",
           founded: 2015,
           isVerified: true,
         },
@@ -110,7 +117,7 @@ async function main() {
         create: {
           headline: "Full Stack Developer | React & Node.js",
           bio: "Passionate developer with 3+ years of experience building scalable web applications.",
-          location: "Lagos, Nigeria",
+          location: "Buea, Cameroon",
           phone: "+234 801 234 5678",
           profileStrength: 88,
         },
@@ -140,15 +147,52 @@ async function main() {
 
   // Create Skills
   const skillNames = [
-    "React", "Node.js", "TypeScript", "JavaScript", "Python", "Django",
-    "PostgreSQL", "MongoDB", "Docker", "Kubernetes", "AWS", "Git",
-    "Next.js", "Vue.js", "Angular", "Express.js", "GraphQL", "REST API",
-    "Figma", "Adobe XD", "CSS", "HTML", "Tailwind CSS", "SASS",
-    "Machine Learning", "Data Science", "TensorFlow", "PyTorch",
-    "Java", "Spring Boot", "PHP", "Laravel", "Ruby on Rails",
-    "React Native", "Flutter", "Swift", "Kotlin", "C++", "C#",
-    "Problem Solving", "Communication", "Teamwork", "Leadership",
-    "Project Management", "Agile", "Scrum"
+    "React",
+    "Node.js",
+    "TypeScript",
+    "JavaScript",
+    "Python",
+    "Django",
+    "PostgreSQL",
+    "MongoDB",
+    "Docker",
+    "Kubernetes",
+    "AWS",
+    "Git",
+    "Next.js",
+    "Vue.js",
+    "Angular",
+    "Express.js",
+    "GraphQL",
+    "REST API",
+    "Figma",
+    "Adobe XD",
+    "CSS",
+    "HTML",
+    "Tailwind CSS",
+    "SASS",
+    "Machine Learning",
+    "Data Science",
+    "TensorFlow",
+    "PyTorch",
+    "Java",
+    "Spring Boot",
+    "PHP",
+    "Laravel",
+    "Ruby on Rails",
+    "React Native",
+    "Flutter",
+    "Swift",
+    "Kotlin",
+    "C++",
+    "C#",
+    "Problem Solving",
+    "Communication",
+    "Teamwork",
+    "Leadership",
+    "Project Management",
+    "Agile",
+    "Scrum",
   ];
 
   const skills = await Promise.all(
@@ -160,8 +204,8 @@ async function main() {
           name,
           category: getCategoryForSkill(name),
         },
-      })
-    )
+      }),
+    ),
   );
 
   // Add skills to job seeker profiles
@@ -174,7 +218,9 @@ async function main() {
       const skill = skills.find((s) => s.name === skillName);
       if (skill) {
         await prisma.profileSkill.upsert({
-          where: { profileId_skillId: { profileId: john.id, skillId: skill.id } },
+          where: {
+            profileId_skillId: { profileId: john.id, skillId: skill.id },
+          },
           update: {},
           create: {
             profileId: john.id,
@@ -188,8 +234,12 @@ async function main() {
   }
 
   // Get companies
-  const company1 = await prisma.company.findUnique({ where: { slug: "tech-solutions-ltd" } });
-  const company2 = await prisma.company.findUnique({ where: { slug: "codecraft-inc" } });
+  const company1 = await prisma.company.findUnique({
+    where: { slug: "tech-solutions-ltd" },
+  });
+  const company2 = await prisma.company.findUnique({
+    where: { slug: "codecraft-inc" },
+  });
 
   // Create Jobs
   if (company1) {
@@ -219,7 +269,7 @@ Join our dynamic team and work on exciting projects that impact millions of user
         type: JobType.FULL_TIME,
         status: JobStatus.ACTIVE,
         level: ExperienceLevel.MID,
-        location: "Lagos, Nigeria",
+        location: "Buea, Cameroon",
         isRemote: false,
         salaryMin: 800000,
         salaryMax: 1200000,
@@ -249,7 +299,8 @@ Join our dynamic team and work on exciting projects that impact millions of user
           userId: jobSeeker1.id,
           jobId: job1.id,
           status: ApplicationStatus.UNDER_REVIEW,
-          coverLetter: "I am excited to apply for this Full Stack Developer position...",
+          coverLetter:
+            "I am excited to apply for this Full Stack Developer position...",
           matchScore: 92,
         },
       });
@@ -262,7 +313,8 @@ Join our dynamic team and work on exciting projects that impact millions of user
         companyId: company2.id,
         title: "Backend Developer",
         slug: `backend-developer-${Date.now()}`,
-        description: "We need an experienced Backend Developer to build our microservices architecture.",
+        description:
+          "We need an experienced Backend Developer to build our microservices architecture.",
         requirements: `• 3+ years Python/Django experience
 • PostgreSQL and Redis proficiency
 • Docker and Kubernetes experience
@@ -286,7 +338,8 @@ Join our dynamic team and work on exciting projects that impact millions of user
         companyId: company2.id,
         title: "Frontend Developer",
         slug: `frontend-developer-${Date.now()}`,
-        description: "Join our team as a Frontend Developer and help build beautiful, responsive UIs.",
+        description:
+          "Join our team as a Frontend Developer and help build beautiful, responsive UIs.",
         requirements: `• 2+ years React/Next.js experience
 • TypeScript proficiency
 • CSS/Tailwind CSS expertise
@@ -294,7 +347,7 @@ Join our dynamic team and work on exciting projects that impact millions of user
         type: JobType.FULL_TIME,
         status: JobStatus.ACTIVE,
         level: ExperienceLevel.MID,
-        location: "Lagos, Nigeria",
+        location: "Buea, Cameroon",
         isRemote: false,
         salaryMin: 600000,
         salaryMax: 900000,
@@ -312,7 +365,13 @@ Join our dynamic team and work on exciting projects that impact millions of user
   for (let i = 6; i >= 0; i--) {
     const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
     await prisma.analytics.upsert({
-      where: { date_metric_dimension: { date, metric: "applications", dimension: "total" } },
+      where: {
+        date_metric_dimension: {
+          date,
+          metric: "applications",
+          dimension: "total",
+        },
+      },
       update: {},
       create: {
         date,
@@ -322,7 +381,9 @@ Join our dynamic team and work on exciting projects that impact millions of user
       },
     });
     await prisma.analytics.upsert({
-      where: { date_metric_dimension: { date, metric: "users", dimension: "total" } },
+      where: {
+        date_metric_dimension: { date, metric: "users", dimension: "total" },
+      },
       update: {},
       create: {
         date,
@@ -332,7 +393,9 @@ Join our dynamic team and work on exciting projects that impact millions of user
       },
     });
     await prisma.analytics.upsert({
-      where: { date_metric_dimension: { date, metric: "jobs", dimension: "total" } },
+      where: {
+        date_metric_dimension: { date, metric: "jobs", dimension: "total" },
+      },
       update: {},
       create: {
         date,
@@ -352,21 +415,45 @@ Join our dynamic team and work on exciting projects that impact millions of user
 
 function getCategoryForSkill(name: string): string {
   const categories: Record<string, string> = {
-    React: "Frontend", "Next.js": "Frontend", "Vue.js": "Frontend",
-    Angular: "Frontend", JavaScript: "Frontend", TypeScript: "Frontend",
-    CSS: "Frontend", HTML: "Frontend", "Tailwind CSS": "Frontend",
-    "Node.js": "Backend", "Express.js": "Backend", Django: "Backend",
-    "Spring Boot": "Backend", Laravel: "Backend", Python: "Backend",
-    Java: "Backend", PHP: "Backend",
-    PostgreSQL: "Database", MongoDB: "Database", MySQL: "Database",
+    React: "Frontend",
+    "Next.js": "Frontend",
+    "Vue.js": "Frontend",
+    Angular: "Frontend",
+    JavaScript: "Frontend",
+    TypeScript: "Frontend",
+    CSS: "Frontend",
+    HTML: "Frontend",
+    "Tailwind CSS": "Frontend",
+    "Node.js": "Backend",
+    "Express.js": "Backend",
+    Django: "Backend",
+    "Spring Boot": "Backend",
+    Laravel: "Backend",
+    Python: "Backend",
+    Java: "Backend",
+    PHP: "Backend",
+    PostgreSQL: "Database",
+    MongoDB: "Database",
+    MySQL: "Database",
     Redis: "Database",
-    Docker: "DevOps", Kubernetes: "DevOps", AWS: "DevOps", Git: "DevOps",
-    Figma: "Design", "Adobe XD": "Design",
-    "Machine Learning": "AI/ML", "Data Science": "AI/ML",
-    TensorFlow: "AI/ML", PyTorch: "AI/ML",
-    "React Native": "Mobile", Flutter: "Mobile", Swift: "Mobile", Kotlin: "Mobile",
-    Communication: "Soft Skills", Teamwork: "Soft Skills",
-    Leadership: "Soft Skills", "Problem Solving": "Soft Skills",
+    Docker: "DevOps",
+    Kubernetes: "DevOps",
+    AWS: "DevOps",
+    Git: "DevOps",
+    Figma: "Design",
+    "Adobe XD": "Design",
+    "Machine Learning": "AI/ML",
+    "Data Science": "AI/ML",
+    TensorFlow: "AI/ML",
+    PyTorch: "AI/ML",
+    "React Native": "Mobile",
+    Flutter: "Mobile",
+    Swift: "Mobile",
+    Kotlin: "Mobile",
+    Communication: "Soft Skills",
+    Teamwork: "Soft Skills",
+    Leadership: "Soft Skills",
+    "Problem Solving": "Soft Skills",
   };
   return categories[name] || "Other";
 }
