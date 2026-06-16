@@ -1,0 +1,1 @@
+export { RecentApplications } from "./StatCard";

@@ -1,0 +1,1 @@
+export { InternshipsSection } from "./index";

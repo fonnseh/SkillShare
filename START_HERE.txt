@@ -1,0 +1,67 @@
+========================================================
+  SKILLBRIDGE — START HERE
+========================================================
+
+This is the COMPLETE web app. All 15 screens from your
+design image are real, working pages in this folder.
+
+You do NOT need to write any code. You just need to
+INSTALL and RUN it on your computer. That step can only
+happen on your machine (it downloads software from the
+internet, which the build environment couldn't do).
+
+--------------------------------------------------------
+  WHAT YOU NEED FIRST (install these once)
+--------------------------------------------------------
+1. Node.js 20+      -> https://nodejs.org  (pick "LTS")
+2. Docker Desktop   -> https://www.docker.com/products/docker-desktop
+   (Docker is the easy way to get the database running.
+    If you already have PostgreSQL, you can skip Docker.)
+
+--------------------------------------------------------
+  THE EASY WAY (one command)
+--------------------------------------------------------
+Open a terminal IN THIS FOLDER and run:
+
+    bash setup.sh
+
+That script installs everything, sets up the database,
+and loads demo data. When it finishes, run:
+
+    npm run dev
+
+Then open your browser to:  http://localhost:3000
+
+--------------------------------------------------------
+  THE MANUAL WAY (if you prefer step by step)
+--------------------------------------------------------
+1.  npm install
+2.  cp .env.example .env
+3.  (open .env, set NEXTAUTH_SECRET to any long random text)
+4.  docker compose up -d db
+5.  npx prisma migrate dev --name init
+6.  npm run db:seed
+7.  npm run dev
+8.  open http://localhost:3000
+
+--------------------------------------------------------
+  LOG IN WITH THESE DEMO ACCOUNTS
+--------------------------------------------------------
+  Admin     admin@skillbridge.com   / Admin@123
+  Employer  hr@techsolutions.com    / Employer@123
+  Seeker    (printed when you run step 6)
+
+--------------------------------------------------------
+  IF SOMETHING GOES WRONG
+--------------------------------------------------------
+Open RUN_GUIDE.md -> "Troubleshooting" section.
+The most likely issue is a TypeScript error during
+build. If you see one, copy the exact message and send
+it back to your assistant for a one-line fix.
+
+--------------------------------------------------------
+  WHEN IT RUNS, TO PUT IT ONLINE (host it)
+--------------------------------------------------------
+Open RUN_GUIDE.md -> "Hosting it online".
+Easiest option is Vercel (free tier works).
+========================================================

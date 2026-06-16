@@ -1,0 +1,483 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  JOB_SEEKER
+  EMPLOYER
+  ADMIN
+}
+
+enum ApplicationStatus {
+  PENDING
+  UNDER_REVIEW
+  SHORTLISTED
+  INTERVIEW_SCHEDULED
+  OFFER_EXTENDED
+  HIRED
+  REJECTED
+  WITHDRAWN
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+  FREELANCE
+  REMOTE
+}
+
+enum JobStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  CLOSED
+  EXPIRED
+}
+
+enum ExperienceLevel {
+  ENTRY
+  JUNIOR
+  MID
+  SENIOR
+  LEAD
+  EXECUTIVE
+}
+
+enum NotificationType {
+  APPLICATION_UPDATE
+  NEW_MESSAGE
+  JOB_RECOMMENDATION
+  INTERVIEW_SCHEDULED
+  OFFER_RECEIVED
+  PROFILE_VIEW
+  JOB_ALERT
+  SYSTEM
+}
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  emailVerified     DateTime?
+  password          String?
+  name              String?
+  image             String?
+  role              UserRole  @default(JOB_SEEKER)
+  isActive          Boolean   @default(true)
+  isSuspended       Boolean   @default(false)
+  lastLogin         DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  profile           Profile?
+  company           Company?
+  applications      Application[]
+  savedJobs         SavedJob[]
+  sentMessages      Message[]      @relation("SentMessages")
+  receivedMessages  Message[]      @relation("ReceivedMessages")
+  notifications     Notification[]
+  accounts          Account[]
+  sessions          Session[]
+  resumes           Resume[]
+  aiRecommendations AIRecommendation[]
+  auditLogs         AuditLog[]
+  interviews        Interview[]    @relation("InterviewCandidate")
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model Profile {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  headline         String?
+  bio              String?
+  phone            String?
+  location         String?
+  country          String?
+  website          String?
+  linkedinUrl      String?
+  githubUrl        String?
+  portfolioUrl     String?
+  avatarUrl        String?
+  bannerUrl        String?
+  isPublic         Boolean  @default(true)
+  profileStrength  Int      @default(0)
+  totalViews       Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skills       ProfileSkill[]
+  experiences  Experience[]
+  educations   Education[]
+  certifications Certification[]
+  projects     Project[]
+
+  @@map("profiles")
+}
+
+model Skill {
+  id           String         @id @default(cuid())
+  name         String         @unique
+  category     String?
+  createdAt    DateTime       @default(now())
+
+  profileSkills ProfileSkill[]
+  jobSkills     JobSkill[]
+
+  @@map("skills")
+}
+
+model ProfileSkill {
+  id         String   @id @default(cuid())
+  profileId  String
+  skillId    String
+  level      String?  // Beginner, Intermediate, Advanced, Expert
+  yearsExp   Int?
+  endorsed   Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  skill   Skill   @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, skillId])
+  @@map("profile_skills")
+}
+
+model Experience {
+  id           String    @id @default(cuid())
+  profileId    String
+  title        String
+  company      String
+  location     String?
+  startDate    DateTime
+  endDate      DateTime?
+  isCurrent    Boolean   @default(false)
+  description  String?
+  skills       String[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@map("experiences")
+}
+
+model Education {
+  id           String    @id @default(cuid())
+  profileId    String
+  institution  String
+  degree       String
+  fieldOfStudy String?
+  startDate    DateTime
+  endDate      DateTime?
+  isCurrent    Boolean   @default(false)
+  gpa          Float?
+  description  String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@map("educations")
+}
+
+model Certification {
+  id           String    @id @default(cuid())
+  profileId    String
+  name         String
+  issuer       String
+  issueDate    DateTime?
+  expiryDate   DateTime?
+  credentialId String?
+  credentialUrl String?
+  createdAt    DateTime  @default(now())
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@map("certifications")
+}
+
+model Project {
+  id           String    @id @default(cuid())
+  profileId    String
+  name         String
+  description  String?
+  url          String?
+  imageUrl     String?
+  technologies String[]
+  startDate    DateTime?
+  endDate      DateTime?
+  createdAt    DateTime  @default(now())
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@map("projects")
+}
+
+model Resume {
+  id          String    @id @default(cuid())
+  userId      String
+  name        String
+  url         String
+  fileSize    Int?
+  isDefault   Boolean   @default(false)
+  atsScore    Int?
+  analysis    Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  applications Application[]
+
+  @@map("resumes")
+}
+
+model Company {
+  id          String    @id @default(cuid())
+  userId      String    @unique
+  name        String
+  slug        String    @unique
+  description String?
+  industry    String?
+  size        String?
+  website     String?
+  logoUrl     String?
+  bannerUrl   String?
+  location    String?
+  country     String?
+  founded     Int?
+  isVerified  Boolean   @default(false)
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobs Job[]
+
+  @@map("companies")
+}
+
+model Job {
+  id               String          @id @default(cuid())
+  companyId        String
+  title            String
+  slug             String          @unique
+  description      String
+  requirements     String?
+  responsibilities String?
+  benefits         String?
+  type             JobType         @default(FULL_TIME)
+  status           JobStatus       @default(ACTIVE)
+  level            ExperienceLevel @default(MID)
+  location         String?
+  isRemote         Boolean         @default(false)
+  salaryMin        Int?
+  salaryMax        Int?
+  salaryCurrency   String          @default("USD")
+  salaryPeriod     String          @default("yearly")
+  deadline         DateTime?
+  viewCount        Int             @default(0)
+  applicationCount Int             @default(0)
+  isFeatured       Boolean         @default(false)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  skills       JobSkill[]
+  applications Application[]
+  savedBy      SavedJob[]
+  interviews   Interview[]
+
+  @@map("jobs")
+}
+
+model JobSkill {
+  id        String   @id @default(cuid())
+  jobId     String
+  skillId   String
+  isRequired Boolean @default(true)
+
+  job   Job   @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, skillId])
+  @@map("job_skills")
+}
+
+model Application {
+  id              String            @id @default(cuid())
+  userId          String
+  jobId           String
+  resumeId        String?
+  status          ApplicationStatus @default(PENDING)
+  coverLetter     String?
+  matchScore      Int?
+  notes           String?
+  appliedAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job        Job         @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  resume     Resume?     @relation(fields: [resumeId], references: [id])
+  interviews Interview[]
+
+  @@unique([userId, jobId])
+  @@map("applications")
+}
+
+model SavedJob {
+  id        String   @id @default(cuid())
+  userId    String
+  jobId     String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+  @@map("saved_jobs")
+}
+
+model Interview {
+  id            String    @id @default(cuid())
+  applicationId String
+  candidateId   String
+  jobId         String
+  scheduledAt   DateTime
+  duration      Int?      // in minutes
+  type          String?   // Video, Phone, In-person
+  location      String?
+  meetingUrl    String?
+  notes         String?
+  feedback      String?
+  result        String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  candidate   User        @relation("InterviewCandidate", fields: [candidateId], references: [id])
+  job         Job         @relation(fields: [jobId], references: [id])
+
+  @@map("interviews")
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  senderId   String
+  receiverId String
+  content    String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  sender   User @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  data      Json?
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model AIRecommendation {
+  id          String   @id @default(cuid())
+  userId      String
+  jobId       String?
+  type        String   // job_match, skill_gap, career_advice, course_suggestion
+  score       Float?
+  title       String
+  description String
+  data        Json?
+  isActedOn   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("ai_recommendations")
+}
+
+model Analytics {
+  id        String   @id @default(cuid())
+  date      DateTime @db.Date
+  metric    String
+  value     Float
+  dimension String?
+  createdAt DateTime @default(now())
+
+  @@unique([date, metric, dimension])
+  @@map("analytics")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  resource  String
+  resourceId String?
+  changes   Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}
